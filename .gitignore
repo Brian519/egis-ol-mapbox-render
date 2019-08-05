@@ -24,6 +24,9 @@ target/
 .idea/
 .metadata/
 
+.cache
+.chche/
+
 __bin/
 bin/
 
