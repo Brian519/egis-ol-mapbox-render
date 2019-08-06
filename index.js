@@ -94,7 +94,7 @@ const layerConf = [
 
 const sources = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
 
-var styleUrl = "http://localhost:1234/style1.json";
+var styleUrl = "http://10.18.1.185/api/v1/styles/1";
 // styleUrl = "http://localhost:8080/map/api/v1/styles/5";
 fetch(styleUrl).then(function (response) {   //http://localhost:8089/egis/base/v1/wvts/styles/1
     response.json().then(function (glStyle) {
@@ -167,7 +167,7 @@ var getTileLayerNames = function (zoom) {
 };
 
 //const urlTemplate = 'http://localhost:8080/map/api/v1/tiles/' + conf.index + '/{z}/{x}/{y}.pbf';
-const urlTemplate = 'http://localhost:8080/map/api/v1/tiles/{index}/{z}/{x}/{y}.pbf';
+const urlTemplate = 'http://10.18.1.185/api/v1/tiles/{index}/{z}/{x}/{y}.pbf';
 // const urlTemplate = 'http://localhost:8080/wvts/wvts/tiles/{z}/{x}/{y}.pbf';
 
 const fetchPreFeatures = function (index, z, x, y) {
@@ -224,7 +224,7 @@ const layer0 = new VectorTileLayer({
 });
 
 
-map.addLayer(layer0);
+//map.addLayer(layer0);
 
 const layer = new VectorTileLayer({
     declutter: true,
@@ -241,6 +241,28 @@ const layer = new VectorTileLayer({
             tileLoadFunction: function (tile, url) {
                 tile.setLoader(function () {
                     const zoom = tile.tileCoord[0];
+                    // 递归请求
+                    let urlPre,urlPost,indexesAry,yIndex;
+                    if(zoom>=14){
+                        let regExp = /{index}/g;
+                        let res = regExp.exec(url);
+                        let len = 7; //"{index}".length
+
+                        if(res){
+                            var index = res.index;
+                            urlPre =  url.substring(0,index+len);
+                            urlPost = url.substring(index+len+1,url.length);
+                            indexesAry = urlPost.split("/");
+                            yIndex = indexesAry[2].split(".")[0];
+                            while(indexesAry[0]>=13){
+                                indexesAry[0] = indexesAry[0] - 1;
+                                indexesAry[1] = Math.floor(indexesAry[1]/2);
+                                yIndex = Math.floor(yIndex/2);
+                            }
+                        }
+                        url = urlPre+"/"+indexesAry[0]+"/"+indexesAry[1]+"/"+yIndex+".pbf";
+                    }
+
                     const indexes = getTileLayerNames(zoom);
                     const features = [];
                     let count = 0;
@@ -295,16 +317,16 @@ const layer = new VectorTileLayer({
 
 map.addLayer(layer);
 
-fetch("http://localhost:1234/sprite.json").then(function (res) {
+fetch("http://10.18.1.185:80/api/v1/sprites/1/sprite.json").then(function (res) {
     res.json().then(function (sprites) {
-        var styleUrl = "http://localhost:1234/style1.json";
+        var styleUrl = "http://10.18.1.185/api/v1/styles/1";
         // styleUrl = "http://localhost:8080/map/api/v1/styles/5";
         fetch(styleUrl).then(function (response) {   //http://localhost:8089/egis/base/v1/wvts/styles/1
             response.json().then(function (glStyle) {
-                stylefunction(layer0, glStyle, sources, resolutions, sprites,
-                    "http://localhost:8080/map/api/v1/sprites/1/sprite.png");
+             /*   stylefunction(layer0, glStyle, sources, resolutions, sprites,
+                    "http://localhost:8080/map/api/v1/sprites/1/sprite.png");*/
                 stylefunction(layer, glStyle, sources, resolutions, sprites,
-                    "http://localhost:8080/map/api/v1/sprites/1/sprite.png");
+                    "http://10.18.1.185:80/api/v1/sprites/1/sprite.png");
                 applyBackground(map, glStyle);
                 // view.setZoom(14);
                 // view.setZoom(13);
