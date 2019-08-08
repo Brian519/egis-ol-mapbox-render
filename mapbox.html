@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="./src/mapbox/mapbox-gl.js"></script>
+<script>
+    let center = [116.39, 39.91];
+
+    //http://yjqz.geo-compass.com/#/map
+    let url='http://yjqz.geo-compass.com/api/v1/styles/1';
+    var map = window.map = new mapboxgl.Map({
+        container: 'map',
+        epsg: 'EPSG:4490',
+        hash: true,
+        style: ''
+    });
+    this.map.setStyle(url)
+
+    map.on("zoomend",function (e) {
+        console.log(map.getZoom())
+    })
+    console.log(map)
+</script>
+</body>
+</html>

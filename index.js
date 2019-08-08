@@ -36,6 +36,7 @@ var resolutions = new Array(22);
 for (var z = 1; z < 22; ++z) {
     resolutions[z] = size / Math.pow(2, z);
 }
+console.log(resolutions);
 
 var view = new View({
     center: [116.376953, 39.904119], // 121.486816, 31.222195
