@@ -22,20 +22,28 @@
 <script>
     let center = [116.39, 39.91];
 
+    var styleUrl = './style.json';
     //http://yjqz.geo-compass.com/#/map
-    let url='http://yjqz.geo-compass.com/api/v1/styles/1';
-    var map = window.map = new mapboxgl.Map({
-        container: 'map',
-        epsg: 'EPSG:4490',
-        hash: true,
-        style: ''
-    });
-    this.map.setStyle(url)
+    fetch(styleUrl).then(function (response) {   //http://localhost:8089/egis/base/v1/wvts/styles/1
+        response.json().then(function (glStyle) {
+            var map = window.map = new mapboxgl.Map({
+                container: 'map',
+                epsg: 'EPSG:4490',
+                hash: true,
+                style: glStyle
+            });
+            //this.map.setStyle(url)
 
-    map.on("zoomend",function (e) {
-        console.log(map.getZoom())
+            map.on("zoomend",function (e) {
+                console.log(map.getZoom())
+            })
+            console.log(map)
+        })
     })
-    console.log(map)
+    let url='http://10.18.1.139:8089/egis/base/v1/wvts/styles/1';
+
+    let passUrl = "http://10.18.1.240:31867/egis/base/v1/wvts/styles/1";
+
 </script>
 </body>
 </html>

@@ -21,6 +21,9 @@ import {get as projGet} from 'ol/proj.js';
 import stylefunction from './src/olms/stylefunction';
 import {applyBackground} from './src/olms/index';
 
+
+//var urlBase = "http://10.18.1.240:31867/egis/base/v1/wvts";
+var urlBase = "http://10.18.1.185/api/v1";
 proj4.defs("EPSG:4490", "+proj=longlat +ellps=GRS80 +no_defs");
 register(proj4);
 
@@ -95,7 +98,7 @@ const layerConf = [
 
 const sources = ['china_1-10', "lrdl", "other", "lfcp", "subp", "poi", "省市县乡注记", "全国省市县乡"];
 
-var styleUrl = "http://10.18.1.185/api/v1/styles/1";
+var styleUrl = urlBase+"/styles/1";
 // styleUrl = "http://localhost:8080/map/api/v1/styles/5";
 fetch(styleUrl).then(function (response) {   //http://localhost:8089/egis/base/v1/wvts/styles/1
     response.json().then(function (glStyle) {
@@ -168,7 +171,7 @@ var getTileLayerNames = function (zoom) {
 };
 
 //const urlTemplate = 'http://localhost:8080/map/api/v1/tiles/' + conf.index + '/{z}/{x}/{y}.pbf';
-const urlTemplate = 'http://10.18.1.185/api/v1/tiles/{index}/{z}/{x}/{y}.pbf';
+const urlTemplate = urlBase+'/tiles/{index}/{z}/{x}/{y}.pbf';
 // const urlTemplate = 'http://localhost:8080/wvts/wvts/tiles/{z}/{x}/{y}.pbf';
 
 const fetchPreFeatures = function (index, z, x, y) {
@@ -296,16 +299,16 @@ const layer = new VectorTileLayer({
 
 map.addLayer(layer);
 
-fetch("http://10.18.1.185:80/api/v1/sprites/1/sprite.json").then(function (res) {
+fetch(urlBase+"/sprites/1/sprite.json").then(function (res) {
     res.json().then(function (sprites) {
-        var styleUrl = "http://10.18.1.185/api/v1/styles/1";
+        var styleUrl = urlBase+"/styles/1";
         // styleUrl = "http://localhost:8080/map/api/v1/styles/5";
         fetch(styleUrl).then(function (response) {   //http://localhost:8089/egis/base/v1/wvts/styles/1
             response.json().then(function (glStyle) {
                 stylefunction(layer0, glStyle, sources, resolutions, sprites,
-                    "http://localhost:8080/map/api/v1/sprites/1/sprite.png");
+                    urlBase+"/sprites/1/sprite.png");
                 stylefunction(layer, glStyle, sources, resolutions, sprites,
-                    "http://10.18.1.185:80/api/v1/sprites/1/sprite.png");
+                    urlBase+"/sprites/1/sprite.png");
                 applyBackground(map, glStyle);
                 // view.setZoom(14);
                 // view.setZoom(13);
